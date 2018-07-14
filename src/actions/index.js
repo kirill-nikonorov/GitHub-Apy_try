@@ -3,6 +3,14 @@ import {actions as companyOrientationsActions} from '../lib/symbiote/companyOrie
 import {actions as tokenActions} from '../lib/symbiote/token';
 import api from '../api';
 
+export const loadUser = (login) => () => {
+    console.log("loadUser with login = ", login)
+    api.fetchUser(login)
+        .then(console.log)
+        .catch(console.log)
+};
+
+
 export const fetchIndustries = () => dispath => {
     api.getIndustries()
         .then(({data: {results}}) => {

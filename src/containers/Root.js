@@ -2,12 +2,21 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {hot} from 'react-hot-loader';
 import PropTypes from 'prop-types';
-import FormPart from './FormPart';
+
+import {Route, Link} from 'react-router-dom';
+
+import App from "./App"
+
 
 const Root = ({store}) => {
     return (
         <Provider store={store}>
-            <FormPart store={store}/>
+            <div>
+                <Route path="/" component={App}/>
+                <Link to="/aqq">Link</Link>
+                <br/>
+                <Link to="/">root</Link>
+            </div>
         </Provider>
     );
 };

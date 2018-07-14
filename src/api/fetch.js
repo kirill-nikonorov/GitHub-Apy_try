@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-export default config => {
+const API_ROOT = 'https://api.github.com/';
+
+export default (config) => {
     const axiosConfig = config || {};
 
     const headers = {
@@ -8,12 +10,13 @@ export default config => {
         'X-Requested-With': 'XMLHttpRequest'
     };
 
-    const reduxItem = JSON.parse(localStorage.getItem('redux'));
-    if (reduxItem && reduxItem.token) headers.Authorization = `Token ${reduxItem.token}`;
-
+    /* const reduxItem = JSON.parse(localStorage.getItem('redux'));
+     if (reduxItem && reduxItem.token) headers.Authorization = `Token ${reduxItem.token}`;
+ */
     axiosConfig.headers = headers;
     axiosConfig.method = axiosConfig.method || 'GET';
+    axiosConfig.url = `${API_ROOT}${axiosConfig.url}`;
 
     return axios(axiosConfig);
 };
-//Authorization: `Token ${token}`
+

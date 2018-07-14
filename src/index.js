@@ -6,12 +6,6 @@ import Root from './containers/Root';
 
 let store = configureStore();
 
-/*
-setInterval(() => {
-    console.log(store.getState())
-}, 4000);
-*/
-
 render(
     <Router>
         <Root store={store} />

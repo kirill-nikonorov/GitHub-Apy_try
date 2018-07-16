@@ -49,16 +49,20 @@ const apiMiddleware = () => next => action => {
     if (!callApi || (callApi == null))
         return next(action);
 
-    const {endpoint, types: [successAction], schema} = callApi;
+
+    const {endpoint, types: [requestAction, successAction], schema} = callApi;
+
 
     const url = endpoint.indexOf(API_ROOT) > -1 ? endpoint : API_ROOT + endpoint;
 
-    const actionWith = (data) => {
+    const actionWith = (data = {}) => {
         const resultAction = Object.assign({}, action, data);
         delete resultAction[CALL_API];
         return resultAction;
     };
     const axiosConfig = configureAxios(url);
+
+    next(requestAction(actionWith()));
 
     axios(axiosConfig)
         .then((response) => {

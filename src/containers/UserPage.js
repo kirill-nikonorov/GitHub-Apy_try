@@ -15,7 +15,6 @@ class UserPage extends React.Component {
 
     handleLoadMore = () => {
         const {starredPagination: {nextPageUrl}, loadStarred, login} = this.props;
-        console.log("lodaStarred = ", nextPageUrl);
         loadStarred(login, nextPageUrl);
     };
 
@@ -25,7 +24,7 @@ class UserPage extends React.Component {
 
 
     render() {
-        const {user, starredRepos, starredPagination: {nextPageUrl}} = this.props;
+        const {user, starredRepos, starredPagination} = this.props;
 
         if (!user)
             return <span>Loading</span>;
@@ -33,10 +32,12 @@ class UserPage extends React.Component {
             <div>
                 <User user={user}/>
                 <br/>
-                <List items={starredRepos}
-                      renderElement={this.renderRepo}
-                      nextPageUrl={nextPageUrl}
-                      handleLoadMore={this.handleLoadMore}/>
+                <List
+                    items={starredRepos}
+                    renderElement={this.renderRepo}
+                    handleLoadMore={this.handleLoadMore}
+                    {...starredPagination}
+                />
                 <hr/>
             </div>
         )
@@ -54,14 +55,15 @@ class UserPage extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+
     const login = ownProps.match.params.login.toLowerCase();
     const {
         pagination: {starredByUser},
         entities: {repos, users}
     } = state;
 
-    const starredPagination = starredByUser[login] || {ids: []};
-    const starredRepoIds = starredPagination.ids;
+    const starredPagination = starredByUser[login] || {};
+    const starredRepoIds = starredPagination.ids || [];
     const starredRepos = starredRepoIds.map(repo => repos[repo]);
 
     return {

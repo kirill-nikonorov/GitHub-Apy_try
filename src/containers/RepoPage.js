@@ -22,7 +22,7 @@ class RepoPage extends React.Component {
     };
 
     render() {
-        const {repo, stargazers, stargazersPagination: {nextPageUrl}} = this.props;
+        const {repo, stargazers, stargazersPagination} = this.props;
 
         if (!repo)
             return <span>Loading</span>;
@@ -33,8 +33,9 @@ class RepoPage extends React.Component {
                 <br/>
                 <List items={stargazers}
                       renderElement={this.renderUser}
-                      nextPageUrl={nextPageUrl}
-                      handleLoadMore={this.handleLoadMore}/>
+                      handleLoadMore={this.handleLoadMore}
+                      {...stargazersPagination}
+                />
                 <hr/>
             </div>
         )
@@ -61,8 +62,8 @@ const mapStateToProps = (state, ownProps) => {
 
     const repoFullName = `${login}/${repoName}`;
 
-    const stargazersPagination = stargazersByRepo[repoFullName] || {ids: []};
-    const stargazersByRepoIds = stargazersPagination.ids;
+    const stargazersPagination = stargazersByRepo[repoFullName] || {};
+    const stargazersByRepoIds = stargazersPagination.ids || [];
     const stargazers = stargazersByRepoIds.map(stargazer => users[stargazer]);
 
     //console.log("nextPageUrl = " + stargazersPagination.nextPageUrl);

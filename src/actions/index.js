@@ -3,16 +3,15 @@ import {actions as pagination} from '../lib/symbiote/pagination';
 import {CALL_API, Schemas} from "../middlewares/api";
 
 const fetchUser = (login) => ({
+    login,
     [CALL_API]: {
         endpoint: `users/${login}`,
-        types: [entitiesActions.entitiesSuccess],
+        types: [entitiesActions.entitiesRequest, entitiesActions.entitiesSuccess],
         schema: Schemas.USER
     }
 });
 
 export const loadUser = (login) => dispatch => {
-
-
     dispatch(fetchUser(login));
 };
 
@@ -22,7 +21,7 @@ const fetchRepo = fullName => ({
     fullName,
     [CALL_API]: {
         endpoint: `repos/${fullName}`,
-        types: [entitiesActions.entitiesSuccess],
+        types: [entitiesActions.entitiesRequest, entitiesActions.entitiesSuccess],
         schema: Schemas.REPO
     }
 });
@@ -33,11 +32,17 @@ export const loadRepo = fullName => dispatch => {
 };
 
 //////////////
+
+const {
+    starredByUser: {starredRequest, starredSuccess},
+    stargazersByRepo: {stargazersRequest, stargazersSuccess}
+} = pagination;
+
 const fetchStarred = (login, nextPageUrl) => ({
     login,
     [CALL_API]: {
         endpoint: nextPageUrl,
-        types: [pagination.starredByUser.starredSuccess],
+        types: [starredRequest, starredSuccess],
         schema: Schemas.REPO_ARRAY
     }
 });
@@ -62,7 +67,7 @@ const fetchStargazers = (fullName, nextPageUrl) => ({
     fullName,
     [CALL_API]: {
         endpoint: nextPageUrl,
-        types: [pagination.stargazersByRepo.stargazersSuccess],
+        types: [stargazersRequest, stargazersSuccess],
         schema: Schemas.USER_ARRAY
     }
 });

@@ -2,6 +2,7 @@ import React from "react"
 import {compose, bindActionCreators} from "redux"
 import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
+import {Link} from 'react-router-dom';
 
 
 class App extends React.Component {
@@ -30,6 +31,10 @@ class App extends React.Component {
                     onClick={this.handleClick}
                 >Go
                 </button>
+                <br/>
+                <Link to="/kirill-nikonorov">kirill-nikonorov</Link>
+                <br/>
+                <Link to="/mrchebik/coconut-ide">/mrchebik/coconut-ide </Link>
                 <hr/>
             </div>
         )

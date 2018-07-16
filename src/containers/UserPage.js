@@ -4,6 +4,7 @@ import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
 import {Link} from 'react-router-dom';
 import {loadStarred, loadUser} from "../actions";
+import {Repo, User} from "../components"
 
 
 const loadData = ({login, loadUser, loadStarred}) => {
@@ -14,31 +15,18 @@ const loadData = ({login, loadUser, loadStarred}) => {
 class UserPage extends React.Component {
 
 
-    renderUser({login, avatarUrl, name}) {
-        return (
-            <Link to={`${login}`}
-                  key={login}>
-                <img src={`${avatarUrl}`} alt={login} width="72" height="72"/>
-                <h3>
-                    {login} {name && <span>* {name}</span>}
-                </h3>
-            </Link>)
-    }
 
-    renderRepos({fullName, name, owner: {login}}) {
-        return (
-            <div key={fullName}>
-                <Link to={`/${fullName}`}>{name} </Link><Link to={`${login}`}>by {login}</Link>
-            </div>
-        )
-    }
+
+
 
     render() {
         const {user, starredRepos} = this.props;
         return (
             <div>
-                {user ? (this.renderUser(user)) : null}
-                {starredRepos ? starredRepos.map(this.renderRepos) : null}
+                {user ? <User data={user}/> : null}
+                {starredRepos ?  starredRepos.map(repo => (
+                    <Repo data={repo} key={repo.fullName}/>
+                )) : null}
                 <hr/>
             </div>
         )

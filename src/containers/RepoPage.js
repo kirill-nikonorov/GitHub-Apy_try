@@ -2,8 +2,8 @@ import React from "react"
 import {compose} from "redux"
 import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
-import {Link} from 'react-router-dom';
 import {loadStargazers, loadRepo} from "../actions";
+import {Repo, User} from "../components"
 
 const loadData = ({repoFullName, loadRepo, loadStargazers}) => {
     loadRepo(repoFullName);
@@ -12,37 +12,16 @@ const loadData = ({repoFullName, loadRepo, loadStargazers}) => {
 
 class RepoPage extends React.Component {
 
-
-    renderRepo({fullName, name, owner: {login}}) {
-
-        //console.log("repo = ", fullName, name, login);
-
-        return (
-            <div key={login}>
-                <Link to={`/${fullName}`}>{name}</Link> by <Link to={`/${login}`}>{login}</Link>
-            </div>)
-    }
-
-    renderUser({avatarUrl, login}) {
-        return (
-            <Link to={`/${login}`}
-                  key={login}>
-                <img src={`${avatarUrl}`} alt={login} width="72" height="72"/>
-                <h3>
-                    {login}
-                </h3>
-            </Link>)
-    }
-
     render() {
         const {repo, stargasers} = this.props;
 
-
         return (
             <div>
-                Repo
-                {repo ? (this.renderRepo(repo)) : null}
-                {stargasers ? stargasers.map(this.renderUser) : null}
+                {repo ? <Repo data={repo}/> : null}
+                <br/>
+                {stargasers ? stargasers.map(stargazers => (
+                    <User data={stargazers} key={stargazers.login}/>
+                )) : null}
                 <hr/>
             </div>
         )

@@ -16,13 +16,11 @@ const Root = ({store}) => {
             <div style={{margin: "10px"}}>
                 <button onClick={() => console.log(store.getState())}>logStore</button>
                 <Route path="/" component={App}/>
+
+
+
                 <Route exact path="/:login" component={UserPage}/>
                 <Route path="/:login/:repo" component={RepoPage}/>
-
-                <Link to="/kirill-nikonorov">kirill-nikonorov</Link>
-                <br/>
-                <Link to="/mrchebik/coconut-ide">/mrchebik/coconut-ide
-                </Link>
                 <DevTools/>
             </div>
         </Provider>

@@ -1,8 +1,5 @@
-import {showErrorNotification, showSuccessNotification} from '../service';
 import {actions as entitiesActions} from '../lib/symbiote/entities';
-import {actions as starredByUser} from '../lib/symbiote/starredByUser';
-import {actions as stargazersByRepo} from '../lib/symbiote/stargazersByRepo';
-import api from '../api';
+import {actions as pagination} from '../lib/symbiote/pagination';
 import {CALL_API, Schemas} from "../middlewares/api";
 
 const fetchUser = (login) => ({
@@ -39,7 +36,7 @@ const fetchStarred = (login) => ({
     login,
     [CALL_API]: {
         endpoint: `users/${login}/starred`,
-        types: [starredByUser.starredSuccess],
+        types: [pagination.starredByUser.starredSuccess],
         schema: Schemas.REPO_ARRAY
     }
 });
@@ -56,7 +53,7 @@ const fetchStargazers = (fullName) => ({
     fullName,
     [CALL_API]: {
         endpoint: `repos/${fullName}/stargazers`,
-        types: [stargazersByRepo.stargazersSuccess],
+        types: [pagination.stargazersByRepo.stargazersSuccess],
         schema: Schemas.USER_ARRAY
     }
 });

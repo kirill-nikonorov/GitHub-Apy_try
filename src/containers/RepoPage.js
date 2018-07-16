@@ -13,14 +13,14 @@ const loadData = ({repoFullName, loadRepo, loadStargazers}) => {
 class RepoPage extends React.Component {
 
     render() {
-        const {repo, stargasers} = this.props;
+        const {repo, stargazers} = this.props;
 
         return (
             <div>
                 {repo ? <Repo data={repo}/> : null}
                 <br/>
-                {stargasers ? stargasers.map(stargazers => (
-                    <User data={stargazers} key={stargazers.login}/>
+                {stargazers ? stargazers.map(stargazer => (
+                    <User data={stargazer} key={stargazer.login}/>
                 )) : null}
                 <hr/>
             </div>
@@ -40,7 +40,7 @@ class RepoPage extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     const login = ownProps.match.params.login.toLowerCase();
     const repoName = ownProps.match.params.repo.toLowerCase();
-    const {stargazersByRepo, entities: {repos, users}} = state;
+    const {pagination: {stargazersByRepo}, entities: {repos, users}} = state;
 
     const repoFullName = `${login}/${repoName}`;
 
@@ -48,13 +48,13 @@ const mapStateToProps = (state, ownProps) => {
     const repo = repos[repoFullName];
 
     const stargazersByRepoIds = stargazersByRepo[repoFullName] || [];
-    const stargasers = stargazersByRepoIds.map(stargazer => users[stargazer]);
+    const stargazers = stargazersByRepoIds.map(stargazer => users[stargazer]);
 
     //console.log("starredRepos = ", starredRepos);
 
     return {
         repoFullName,
-        stargasers,
+        stargazers,
         repo
     };
 };

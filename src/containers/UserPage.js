@@ -15,16 +15,12 @@ const loadData = ({login, loadUser, loadStarred}) => {
 class UserPage extends React.Component {
 
 
-
-
-
-
     render() {
         const {user, starredRepos} = this.props;
         return (
             <div>
                 {user ? <User data={user}/> : null}
-                {starredRepos ?  starredRepos.map(repo => (
+                {starredRepos ? starredRepos.map(repo => (
                     <Repo data={repo} key={repo.fullName}/>
                 )) : null}
                 <hr/>
@@ -37,7 +33,7 @@ class UserPage extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-       // console.log(this.props);
+        // console.log(this.props);
         if (this.props.login !== nextProps.login)
             loadData(nextProps)
     }
@@ -45,7 +41,7 @@ class UserPage extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
     const login = ownProps.match.params.login.toLowerCase();
-    const {starredByUser, entities: {repos, users}} = state;
+    const {pagination: {starredByUser}, entities: {repos, users}} = state;
 
     const user = users[login];
 

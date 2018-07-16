@@ -17,8 +17,6 @@ const Root = ({store}) => {
                 <button onClick={() => console.log(store.getState())}>logStore</button>
                 <Route path="/" component={App}/>
 
-
-
                 <Route exact path="/:login" component={UserPage}/>
                 <Route path="/:login/:repo" component={RepoPage}/>
                 <DevTools/>

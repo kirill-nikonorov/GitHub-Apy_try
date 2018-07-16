@@ -1,7 +1,6 @@
 import {combineReducers} from 'redux';
 import merge from 'lodash/merge'
-import {reducer as starredByUser} from '../lib/symbiote/starredByUser';
-import {reducer as stargazersByRepo} from '../lib/symbiote/stargazersByRepo';
+import {reducer as pagination} from '../lib/symbiote/pagination';
 
 const entities = (state = {users: {}, repos: {}}, action) => {
     if (action.payload && action.payload[0].entities) {
@@ -9,10 +8,10 @@ const entities = (state = {users: {}, repos: {}}, action) => {
     }
     return state
 };
+
 const rootReducer = combineReducers({
     entities,
-    starredByUser,
-    stargazersByRepo
+    pagination
 });
 
 export default rootReducer;

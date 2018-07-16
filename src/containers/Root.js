@@ -13,7 +13,7 @@ import RepoPage from "./RepoPage"
 const Root = ({store}) => {
     return (
         <Provider store={store}>
-            <div>
+            <div style={{margin: "10px"}}>
                 <button onClick={() => console.log(store.getState())}>logStore</button>
                 <Route path="/" component={App}/>
                 <Route exact path="/:login" component={UserPage}/>

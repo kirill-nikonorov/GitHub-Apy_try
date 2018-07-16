@@ -19,13 +19,13 @@ class RepoPage extends React.Component {
 
         return (
             <div key={login}>
-                <Link to={`${fullName}`}>{name}</Link> by <Link to={`${login}`}>{login}</Link>
+                <Link to={`/${fullName}`}>{name}</Link> by <Link to={`/${login}`}>{login}</Link>
             </div>)
     }
 
     renderUser({avatarUrl, login}) {
         return (
-            <Link to={`${login}`}
+            <Link to={`/${login}`}
                   key={login}>
                 <img src={`${avatarUrl}`} alt={login} width="72" height="72"/>
                 <h3>
@@ -53,7 +53,7 @@ class RepoPage extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.login !== nextProps.login)
+        if (this.props.repoFullName !== nextProps.repoFullName)
             loadData(nextProps)
     }
 }

@@ -60,6 +60,7 @@ const apiMiddleware = () => next => action => {
 
 
 const handleError = ({response, request, message}) => {
+    console.log("Error Occurred");
     if (response) {
         console.log('Error', response);
         const {data, status} = response;

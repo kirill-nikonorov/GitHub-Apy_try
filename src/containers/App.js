@@ -14,7 +14,7 @@ class App extends React.Component {
     };
     handleClick = (e) => {
         e.preventDefault();
-        this.props.history.push(`${this.getValue()}`)
+        this.props.history.push(`/${this.getValue()}`)
     };
 
     render() {

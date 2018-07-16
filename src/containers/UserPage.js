@@ -28,7 +28,7 @@ class UserPage extends React.Component {
     renderRepos({fullName, name, owner: {login}}) {
         return (
             <div key={fullName}>
-                <Link to={`${fullName}`}>{name} </Link><Link to={`${login}`}>by {login}</Link>
+                <Link to={`/${fullName}`}>{name} </Link><Link to={`${login}`}>by {login}</Link>
             </div>
         )
     }

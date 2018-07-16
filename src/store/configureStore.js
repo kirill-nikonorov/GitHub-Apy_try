@@ -1,6 +1,8 @@
 import {createStore, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../reducers/rootReducer';
+import apiMiddleware from "../middlewares/api"
+import DevTools from '../containers/DevTools'
 
 import persistState from 'redux-localstorage';
 
@@ -13,8 +15,9 @@ const configureStore = preloadedState => {
         rootReducer,
         preloadedState,
         compose(
-            applyMiddleware(thunk),
-            persistState('token', slicer)
+            applyMiddleware(thunk, apiMiddleware),
+            DevTools.instrument()
+            // persistState('token', slicer)
         )
     );
 

@@ -11,7 +11,8 @@ export const showErrorNotification = (status = '', data) => {
     notification['error']({
         duration: 2,
         message: status,
-        description: problems
+        description: problems,
+        placement : 'bottomLeft'
     });
 };
 export const showSuccessNotification = message => {

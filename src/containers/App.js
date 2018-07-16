@@ -2,7 +2,6 @@ import React from "react"
 import {compose, bindActionCreators} from "redux"
 import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
-import * as actions from "../actions"
 
 
 class App extends React.Component {
@@ -15,14 +14,11 @@ class App extends React.Component {
     };
     handleClick = (e) => {
         e.preventDefault();
-        console.log(this.getValue());
-        this.props.actions.loadUser(this.getValue());
+        this.props.history.push(`${this.getValue()}`)
     };
 
     render() {
         const {value} = this.props;
-        console.log(value);
-
         return (
             <div>
                 <input
@@ -34,6 +30,7 @@ class App extends React.Component {
                     onClick={this.handleClick}
                 >Go
                 </button>
+                <hr/>
             </div>
         )
     }
@@ -42,7 +39,6 @@ class App extends React.Component {
         if (nextProps.value !== this.props.value) {
             this.setValue(nextProps.value)
         }
-
     }
 }
 
@@ -52,14 +48,10 @@ const mapStateToProps = (state, ownProps) => {
         value
     };
 };
-const mapDispatchToProps = (dispatch) => ({
-    actions: bindActionCreators(actions, dispatch)
-});
 
 export default compose(
     hot(module),
     connect(
-        mapStateToProps,
-        mapDispatchToProps
+        mapStateToProps
     )
 )(App);

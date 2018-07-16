@@ -1,99 +1,71 @@
 import {showErrorNotification, showSuccessNotification} from '../service';
-import {actions as companyOrientationsActions} from '../lib/symbiote/companyOrientations';
-import {actions as tokenActions} from '../lib/symbiote/token';
+import {actions as entitiesActions} from '../lib/symbiote/entities';
+import {actions as starredByUser} from '../lib/symbiote/starredByUser';
+import {actions as stargazersByRepo} from '../lib/symbiote/stargazersByRepo';
 import api from '../api';
+import {CALL_API, Schemas} from "../middlewares/api";
 
-export const loadUser = (login) => () => {
-    console.log("loadUser with login = ", login)
-    api.fetchUser(login)
-        .then(console.log)
-        .catch(console.log)
-};
-
-
-export const fetchIndustries = () => dispath => {
-    api.getIndustries()
-        .then(({data: {results}}) => {
-            dispath(companyOrientationsActions.industries.saveIndustries(results));
-        })
-        .catch(handleError);
-};
-export const fetchSubIndustries = industryId => dispath => {
-    api.getSubIndustries(industryId)
-        .then(({data: {results}}) => {
-            dispath(
-                companyOrientationsActions.subIndustries.saveSubIndustries(results, industryId)
-            );
-        })
-        .catch(handleError);
-};
-export const postNewCompany = (data, onSuccess) => () => {
-    api.postNewCompany(data)
-        .then(({data: {id}}) => {
-            onSuccess(id);
-        })
-        .catch(handleError);
-};
-
-export const createNewUser = (data, onSuccess) => () => {
-    api.postNewUser(data)
-        .then(onSuccess)
-        .catch(handleError);
-};
-export const postNewIndividualUser = (data, onSuccess) => () => {
-    api.postNewIndividualUser(data)
-        .then(onSuccess)
-        .catch(handleError);
-};
-export const authUser = (data, onSuccess) => dispath => {
-    api.authUser(data)
-        .then(({data: {token}}) => {
-            showSuccessNotification('success authorization');
-            dispath(tokenActions.saveToken(token));
-            onSuccess();
-        })
-        .catch(handleError);
-};
-export const confirmRegistration = (data, onSuccess) => dispath => {
-    api.confirmRegistration(data)
-        .then(({data: {token}}) => {
-            showSuccessNotification('success confirmation');
-            dispath(tokenActions.saveToken(token));
-            onSuccess();
-        })
-        .catch(handleError);
-};
-export const resendConfirmationCode = data => () => {
-    api.resendConfirmationCode(data)
-        .then(() => {
-            showSuccessNotification('Successfully Sent');
-        })
-        .catch(handleError);
-};
-export const changeToken = data => (dispath) => {
-    dispath(tokenActions.changeToken(data))
-};
-
-const handleError = ({response, request, message}) => {
-    if (response) {
-        console.log('Error', response);
-        const {data, status} = response;
-        if (status === 500 && isAssertionError(data)) handleAssertionError();
-        else showErrorNotification(status, data);
-    } else if (request) {
-        console.log('Error', request);
-        showErrorNotification('', request);
-    } else {
-        showErrorNotification('', message);
-        console.log('Error', message);
+const fetchUser = (login) => ({
+    [CALL_API]: {
+        endpoint: `users/${login}`,
+        types: [entitiesActions.entitiesSuccess],
+        schema: Schemas.USER
     }
+});
+
+export const loadUser = (login) => dispatch => {
+    // console.log("loadUser with login = ", login);
+    dispatch(fetchUser(login));
 };
 
-const isAssertionError = string => {
-    let errorType = string.split(' ');
-    return (errorType[0] = 'AssertionError');
+///////////////
+
+const fetchRepo = fullName => ({
+    fullName,
+    [CALL_API]: {
+        endpoint: `repos/${fullName}`,
+        types: [entitiesActions.entitiesSuccess],
+        schema: Schemas.REPO
+    }
+});
+
+export const loadRepo = fullName => dispatch => {
+    // console.log("loadUser with login = ", login);
+    dispatch(fetchRepo(fullName));
 };
-const handleAssertionError = () => {
-    console.log('AssertionError');
-    showErrorNotification(500, {detail: 'not found'});
+
+//////////////
+const fetchStarred = (login) => ({
+    login,
+    [CALL_API]: {
+        endpoint: `users/${login}/starred`,
+        types: [starredByUser.starredSuccess],
+        schema: Schemas.REPO_ARRAY
+    }
+});
+
+export const loadStarred = (login) => dispatch => {
+    //console.log("loadStarred with login = ", login);
+    dispatch(fetchStarred(login));
 };
+
+
+/////////
+
+const fetchStargazers = (fullName) => ({
+    fullName,
+    [CALL_API]: {
+        endpoint: `repos/${fullName}/stargazers`,
+        types: [stargazersByRepo.stargazersSuccess],
+        schema: Schemas.USER_ARRAY
+    }
+});
+
+export const loadStargazers = (fullName) => dispatch => {
+    //console.log("loadStargazers with login = ", login);
+    dispatch(fetchStargazers(fullName));
+};
+
+/////////////////////
+
+

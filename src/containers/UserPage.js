@@ -1,10 +1,9 @@
 import React from "react"
-import {compose, bindActionCreators} from "redux"
+import {compose} from "redux"
 import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
-import {Link} from 'react-router-dom';
 import {loadStarred, loadUser} from "../actions";
-import {Repo, User} from "../components"
+import {Repo, User, List} from "../components"
 
 
 const loadData = ({login, loadUser, loadStarred}) => {
@@ -14,15 +13,30 @@ const loadData = ({login, loadUser, loadStarred}) => {
 
 class UserPage extends React.Component {
 
+    handleLoadMore = () => {
+        const {starredPagination: {nextPageUrl}, loadStarred, login} = this.props;
+        console.log("lodaStarred = ", nextPageUrl);
+        loadStarred(login, nextPageUrl);
+    };
+
+    renderRepo(repo) {
+        return <Repo repo={repo} key={repo.fullName}/>
+    }
+
 
     render() {
-        const {user, starredRepos} = this.props;
+        const {user, starredRepos, starredPagination: {nextPageUrl}} = this.props;
+
+        if (!user)
+            return <span>Loading</span>;
         return (
             <div>
-                {user ? <User data={user}/> : null}
-                {starredRepos ? starredRepos.map(repo => (
-                    <Repo data={repo} key={repo.fullName}/>
-                )) : null}
+                <User user={user}/>
+                <br/>
+                <List items={starredRepos}
+                      renderElement={this.renderRepo}
+                      nextPageUrl={nextPageUrl}
+                      handleLoadMore={this.handleLoadMore}/>
                 <hr/>
             </div>
         )
@@ -41,21 +55,20 @@ class UserPage extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
     const login = ownProps.match.params.login.toLowerCase();
-    const {pagination: {starredByUser}, entities: {repos, users}} = state;
+    const {
+        pagination: {starredByUser},
+        entities: {repos, users}
+    } = state;
 
-    const user = users[login];
-
-    //console.log(login + " " + user);
-
-    const starredRepoIds = starredByUser[login] || [];
+    const starredPagination = starredByUser[login] || {ids: []};
+    const starredRepoIds = starredPagination.ids;
     const starredRepos = starredRepoIds.map(repo => repos[repo]);
-
-    //console.log("starredRepos = ", starredRepos);
 
     return {
         login,
-        user,
-        starredRepos
+        user: users[login],
+        starredRepos,
+        starredPagination
     };
 };
 

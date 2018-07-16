@@ -3,7 +3,7 @@ import {compose} from "redux"
 import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
 import {loadStargazers, loadRepo} from "../actions";
-import {Repo, User} from "../components"
+import {Repo, User, List} from "../components"
 
 const loadData = ({repoFullName, loadRepo, loadStargazers}) => {
     loadRepo(repoFullName);
@@ -11,17 +11,30 @@ const loadData = ({repoFullName, loadRepo, loadStargazers}) => {
 };
 
 class RepoPage extends React.Component {
+    handleLoadMore = () => {
+        const {stargazersPagination: {nextPageUrl}, loadStargazers, repoFullName} = this.props;
+        console.log("loadStargazers = ", nextPageUrl);
+        loadStargazers(repoFullName, nextPageUrl);
+    };
+
+    renderUser(user) {
+        return <User user={user} key={user.login}/>
+    };
 
     render() {
-        const {repo, stargazers} = this.props;
+        const {repo, stargazers, stargazersPagination: {nextPageUrl}} = this.props;
+
+        if (!repo)
+            return <span>Loading</span>;
 
         return (
             <div>
-                {repo ? <Repo data={repo}/> : null}
+                <Repo repo={repo}/>
                 <br/>
-                {stargazers ? stargazers.map(stargazer => (
-                    <User data={stargazer} key={stargazer.login}/>
-                )) : null}
+                <List items={stargazers}
+                      renderElement={this.renderUser}
+                      nextPageUrl={nextPageUrl}
+                      handleLoadMore={this.handleLoadMore}/>
                 <hr/>
             </div>
         )
@@ -40,22 +53,25 @@ class RepoPage extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     const login = ownProps.match.params.login.toLowerCase();
     const repoName = ownProps.match.params.repo.toLowerCase();
-    const {pagination: {stargazersByRepo}, entities: {repos, users}} = state;
+
+    const {
+        pagination: {stargazersByRepo},
+        entities: {repos, users}
+    } = state;
 
     const repoFullName = `${login}/${repoName}`;
 
-    //console.log("repoFullName = ", repoFullName);
-    const repo = repos[repoFullName];
-
-    const stargazersByRepoIds = stargazersByRepo[repoFullName] || [];
+    const stargazersPagination = stargazersByRepo[repoFullName] || {ids: []};
+    const stargazersByRepoIds = stargazersPagination.ids;
     const stargazers = stargazersByRepoIds.map(stargazer => users[stargazer]);
 
+    //console.log("nextPageUrl = " + stargazersPagination.nextPageUrl);
     //console.log("starredRepos = ", starredRepos);
-
     return {
         repoFullName,
         stargazers,
-        repo
+        repo: repos[repoFullName],
+        stargazersPagination
     };
 };
 

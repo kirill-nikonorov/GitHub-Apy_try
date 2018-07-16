@@ -17,16 +17,29 @@ export const Schemas = {
     REPO_ARRAY: [repoSchema],
 };
 
+const getNextPageUrl = response => {
+    const link = response.headers.link;
+    if (!link) {
+        return null
+    }
 
-const configureAxios = (endpoint) => {
+
+    const nextLink = link.split(',').find(s => s.indexOf('rel="next"') > -1)
+    if (!nextLink) {
+        return null
+    }
+
+    return nextLink.trim().split(';')[0].slice(1, -1)
+}
+
+const configureAxios = (url) => {
     const axiosConfig = {};
     axiosConfig.headers = {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest'
     };
     axiosConfig.method = axiosConfig.method || 'GET';
-    axiosConfig.url = `${API_ROOT}${endpoint}`;
-    //   console.log("AxiosConfigs = ", axiosConfig);
+    axiosConfig.url = url;
 
     return axiosConfig;
 };
@@ -36,24 +49,29 @@ const apiMiddleware = () => next => action => {
     if (!callApi || (callApi == null))
         return next(action);
 
+    const {endpoint, types: [successAction], schema} = callApi;
+
+    const url = endpoint.indexOf(API_ROOT) > -1 ? endpoint : API_ROOT + endpoint;
 
     const actionWith = (data) => {
         const resultAction = Object.assign({}, action, data);
         delete resultAction[CALL_API];
         return resultAction;
     };
-
-    const {endpoint, types: [succesAction], schema} = callApi;
-
-    const axiosConfig = configureAxios(endpoint);
+    const axiosConfig = configureAxios(url);
 
     axios(axiosConfig)
-        .then((responce) => {
-            const camelizedJson = camelizeKeys(responce.data);
+        .then((response) => {
+            const camelizedJson = camelizeKeys(response);
             //console.log("camelizedJson =", camelizedJson);
-            const normalisedData = normalize(camelizedJson, schema);
+
+            const nextPageUrl = getNextPageUrl(response);
+
+            const normalisedData = normalize(camelizedJson.data, schema);
             // console.log("normalisedData = ", normalisedData)
-            next(succesAction(actionWith(normalisedData)));
+
+            next(successAction(actionWith(
+                Object.assign({}, normalisedData, {nextPageUrl}))))
         })
         .catch(handleError);
 };
@@ -64,7 +82,7 @@ const handleError = ({response, request, message}) => {
     if (response) {
         console.log('Error', response);
         const {data, status} = response;
-         showErrorNotification(status, data);
+        showErrorNotification(status, data);
     } else if (request) {
         console.log('Error', request);
         showErrorNotification('', request);

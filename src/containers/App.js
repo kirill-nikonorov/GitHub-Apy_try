@@ -32,9 +32,13 @@ class App extends React.Component {
                 >Go
                 </button>
                 <br/>
+                <Link to="/kirill">kirill</Link>
+                <br/>
                 <Link to="/kirill-nikonorov">kirill-nikonorov</Link>
                 <br/>
                 <Link to="/mrchebik/coconut-ide">/mrchebik/coconut-ide </Link>
+                <br/>
+                <Link to="/flextype/flextype">/flextype/flextype</Link>
                 <hr/>
             </div>
         )

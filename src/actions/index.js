@@ -11,7 +11,8 @@ const fetchUser = (login) => ({
 });
 
 export const loadUser = (login) => dispatch => {
-    // console.log("loadUser with login = ", login);
+
+
     dispatch(fetchUser(login));
 };
 
@@ -32,37 +33,52 @@ export const loadRepo = fullName => dispatch => {
 };
 
 //////////////
-const fetchStarred = (login) => ({
+const fetchStarred = (login, nextPageUrl) => ({
     login,
     [CALL_API]: {
-        endpoint: `users/${login}/starred`,
+        endpoint: nextPageUrl,
         types: [pagination.starredByUser.starredSuccess],
         schema: Schemas.REPO_ARRAY
     }
 });
 
-export const loadStarred = (login) => dispatch => {
-    //console.log("loadStarred with login = ", login);
-    dispatch(fetchStarred(login));
+export const loadStarred = (login, nextPage) => (dispatch, getState) => {
+
+    console.log();
+    const {
+        pageCount = 0,
+        nextPageUrl = `users/${login}/starred`
+    } = getState().pagination.starredByUser[login] || {};
+
+    if (pageCount > 0 && !nextPage) return;
+
+    dispatch(fetchStarred(login, nextPageUrl));
 };
 
 
 /////////
 
-const fetchStargazers = (fullName) => ({
+const fetchStargazers = (fullName, nextPageUrl) => ({
     fullName,
     [CALL_API]: {
-        endpoint: `repos/${fullName}/stargazers`,
+        endpoint: nextPageUrl,
         types: [pagination.stargazersByRepo.stargazersSuccess],
         schema: Schemas.USER_ARRAY
     }
 });
 
-export const loadStargazers = (fullName) => dispatch => {
-    //console.log("loadStargazers with login = ", login);
-    dispatch(fetchStargazers(fullName));
-};
+export const loadStargazers = (fullName, nextPage) => (dispatch, getState) => {
 
-/////////////////////
+        const {
+            pageCount = 0,
+            nextPageUrl = `repos/${fullName}/stargazers`
+        } = getState().pagination.stargazersByRepo[fullName] || {};
+
+        if (pageCount > 0 && !nextPage) return;
+        dispatch(fetchStargazers(fullName, nextPageUrl));
+    }
+;
+
+
 
 

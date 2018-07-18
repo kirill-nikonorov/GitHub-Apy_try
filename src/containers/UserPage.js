@@ -2,7 +2,7 @@ import React from "react"
 import {compose} from "redux"
 import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
-import {loadStarred, loadUser} from "../actions";
+import {loadUser , loadStarred} from "../actions";
 import {Repo, User, List} from "../components"
 
 

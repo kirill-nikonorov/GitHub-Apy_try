@@ -1,5 +1,5 @@
 import React from "react"
-import {compose, bindActionCreators} from "redux"
+import {compose} from "redux"
 import {hot} from "react-hot-loader";
 import {connect} from "react-redux";
 import {Link} from 'react-router-dom';

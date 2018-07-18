@@ -22,6 +22,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
+    "redux-actions": "^2.4.0",
     "redux-form": "^7.4.2",
     "redux-localstorage": "^0.4.1",
     "redux-symbiote": "^2.3.0",

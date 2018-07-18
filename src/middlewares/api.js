@@ -52,7 +52,6 @@ const apiMiddleware = () => next => action => {
 
     const {endpoint, types: [requestAction, successAction], schema} = callApi;
 
-
     const url = endpoint.indexOf(API_ROOT) > -1 ? endpoint : API_ROOT + endpoint;
 
     const actionWith = (data = {}) => {
@@ -66,6 +65,7 @@ const apiMiddleware = () => next => action => {
 
     axios(axiosConfig)
         .then((response) => {
+
             const camelizedJson = camelizeKeys(response);
             //console.log("camelizedJson =", camelizedJson);
 
@@ -73,6 +73,7 @@ const apiMiddleware = () => next => action => {
 
             const normalisedData = normalize(camelizedJson.data, schema);
             // console.log("normalisedData = ", normalisedData)
+
 
             next(successAction(actionWith(
                 Object.assign({}, normalisedData, {nextPageUrl}))))
